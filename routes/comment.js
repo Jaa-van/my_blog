@@ -26,8 +26,16 @@ router.post("/posts/:_id/comments", async (req, res) => {
 router.get("/posts/:_id/comments", async (req, res) => {
   const params = req.params;
   const comments = await Comment.find({ post_id: params });
+  const commentsObj = comments.map((e) => {
+    return {
+      commentId: e._id,
+      user: e.user,
+      content: e.content,
+      createdAt: e.createdAt,
+    };
+  });
 
-  res.status(200).json({ data: comments });
+  res.status(200).json({ data: commentsObj });
 });
 
 router.put("/posts/:_id/comments/:_commentId", async (req, res) => {

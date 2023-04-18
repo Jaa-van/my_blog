@@ -5,8 +5,16 @@ const Post = require("../schemas/post.js");
 
 router.get("/posts/", async (req, res) => {
   const posts = await Post.find({}).sort({ createdAt: 1 });
+  const postsObj = posts.map((e) => {
+    return {
+      postId: e._id,
+      user: e.user,
+      title: e.title,
+      createdAt: e.createdAt,
+    };
+  });
 
-  res.status(200).json({ data: posts });
+  res.status(200).json({ data: postsObj });
 });
 
 router.get("/posts/:_id", async (req, res) => {
@@ -14,7 +22,16 @@ router.get("/posts/:_id", async (req, res) => {
     const params = req.params;
 
     const posts = await Post.find({ _id: params });
-    res.status(200).json({ data: posts });
+    const postsObj = posts.map((e) => {
+      return {
+        postId: e._id,
+        user: e.user,
+        title: e.title,
+        content: e.content,
+        createdAt: e.createdAt,
+      };
+    });
+    res.status(200).json({ data: postsObj });
   } catch (e) {
     res.status(404).json({ message: "게시글 조회에 실패하였습니다" });
   }
