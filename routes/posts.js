@@ -10,10 +10,14 @@ router.get("/posts/", async (req, res) => {
 });
 
 router.get("/posts/:_id", async (req, res) => {
-  const params = req.params;
+  try {
+    const params = req.params;
 
-  const posts = await Post.find({ _id: params });
-  res.status(200).json({ data: posts });
+    const posts = await Post.find({ _id: params });
+    res.status(200).json({ data: posts });
+  } catch (e) {
+    res.status(404).json({ message: "게시글 조회에 실패하였습니다" });
+  }
 });
 
 router.post("/posts/", async (req, res) => {
