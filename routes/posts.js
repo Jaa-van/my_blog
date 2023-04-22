@@ -112,7 +112,6 @@ router.put("/posts/:postId", authMiddleware, async (req, res) => {
       return;
     }
     const existsPost = await Post.find({ _id: postId, user_id: userId });
-    console.log(existsPost);
     if (existsPost.length) {
       await Post.updateOne(
         { _id: postId, user_id: userId },

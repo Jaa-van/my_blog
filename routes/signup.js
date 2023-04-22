@@ -23,7 +23,6 @@ router.post("/signup", async (req, res) => {
 
     // 패스워드 형식 확인
     const passwordStandard = new RegExp(`${nickname}`, "g");
-    console.log(password.match(passwordStandard));
     if (
       password.length < 3 ||
       (password.match(passwordStandard) ?? []).length ||
