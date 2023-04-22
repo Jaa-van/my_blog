@@ -36,7 +36,7 @@ router.post("/posts/:postId/comments", authMiddleware, async (req, res) => {
 
     res.json({ message: "댓글을 생성하였습니다." });
   } catch (e) {
-    res.status(400).json({ errorMessage: "게시글 작성에 실패하였습니다." });
+    res.status(400).json({ errorMessage: "댓글 작성에 실패하였습니다." });
   }
 });
 
@@ -60,6 +60,7 @@ router.get("/posts/:postId/comments", async (req, res) => {
     if (existsPost.length) {
     } else {
       res.status(404).json({ errorMessage: "게시글이 존재하지 않습니다." });
+      return;
     }
 
     res.status(200).json({ comment: commentsObj });

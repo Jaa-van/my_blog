@@ -150,6 +150,7 @@ router.delete("/posts/:postId/", authMiddleware, async (req, res) => {
       }
     } else {
       res.status(404).json({ errorMessage: "게시글이 존재하지 않습니다." });
+      return;
     }
 
     res.status(200).json({ message: "게시글을 삭제하였습니다." });
