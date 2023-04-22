@@ -9,7 +9,12 @@ router.post("/signup", async (req, res) => {
     const { nickname, password, confirm } = req.body;
 
     // 닉네임 형식 확인
-    if (typeof nickname !== "string") {
+    const nicknameStandard = /[a-zA-z0-9]/g;
+    if (
+      nickname.length < 2 ||
+      (nickname.match(nicknameStandard) ?? []).length !== nickname.length ||
+      typeof nickname !== "string"
+    ) {
       res
         .status(412)
         .json({ errorMessage: "닉네임의 형식이 일치하지 않습니다." });
@@ -17,7 +22,13 @@ router.post("/signup", async (req, res) => {
     }
 
     // 패스워드 형식 확인
-    if (typeof password !== "string") {
+    const passwordStandard = new RegExp(`${nickname}`, "g");
+    console.log(password.match(passwordStandard));
+    if (
+      password.length < 3 ||
+      (password.match(passwordStandard) ?? []).length ||
+      typeof password !== "string"
+    ) {
       res
         .status(412)
         .json({ errorMessage: "패스워드 형식이 일치하지 않습니다." });
