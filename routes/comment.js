@@ -47,17 +47,17 @@ router.get("/posts/:postId/comments", async (req, res) => {
     const { postId } = req.params;
     const comments = await Comment.find({ post_id: postId });
     const existsPost = await Post.find({ _id: postId });
+    const commentsObj = comments.map((e) => {
+      return {
+        commentId: e._id,
+        userId: e.user_id,
+        nickname: e.nickname,
+        comment: e.comment,
+        createdAt: e.createdAt,
+        updatedAt: e.updatedAt,
+      };
+    });
     if (existsPost.length) {
-      const commentsObj = comments.map((e) => {
-        return {
-          commentId: e._id,
-          userId: e.user_id,
-          nickname: e.nickname,
-          comment: e.comment,
-          createdAt: e.createdAt,
-          updatedAt: e.updatedAt,
-        };
-      });
     } else {
       res.status(404).json({ errorMessage: "게시글이 존재하지 않습니다." });
     }
