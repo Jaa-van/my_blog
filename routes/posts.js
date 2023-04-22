@@ -3,6 +3,7 @@ const router = express.Router();
 const authMiddleware = require("../middlewares/auth-middleware");
 
 const Post = require("../schemas/post.js");
+const Comment = require("../schemas/comment.js");
 
 // 게시글 조회
 
@@ -140,6 +141,7 @@ router.delete("/posts/:postId/", authMiddleware, async (req, res) => {
     if (existsPost.length) {
       if (existsPost.map((e) => e.user_id) == userId) {
         await Post.deleteOne({ _id: postId });
+        await Comment.deleteMany({ post_id: postId });
       } else {
         res
           .status(403)
