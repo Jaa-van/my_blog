@@ -12,7 +12,7 @@ router.post("/posts/:postId/comments", authMiddleware, async (req, res) => {
     const { comment } = req.body;
     const { userId, nickname } = res.locals.user;
     const { postId } = req.params;
-    const existsPost = await Post.find({ _id: postId });
+    const existsPost = await Post.findOne({ _id: postId });
 
     // 데이터 전달이 이상한 경우
     if (!comment) {
@@ -45,8 +45,8 @@ router.post("/posts/:postId/comments", authMiddleware, async (req, res) => {
 router.get("/posts/:postId/comments", async (req, res) => {
   try {
     const { postId } = req.params;
-    const comments = await Comment.find({ post_id: postId });
-    const existsPost = await Post.find({ _id: postId });
+    const comments = await Comment.findOne({ post_id: postId });
+    const existsPost = await Post.findOne({ _id: postId });
     const commentsObj = comments.map((e) => {
       return {
         commentId: e._id,
@@ -74,8 +74,7 @@ router.put(
   authMiddleware,
   async (req, res) => {
     try {
-      const { postId } = req.params;
-      const { commentId } = req.params;
+      const { postId, commentId } = req.params;
       const { userId } = res.locals.user;
       const { comment } = req.body;
 
@@ -84,8 +83,8 @@ router.put(
         res.status(412).json({ message: "데이터 형식이 올바르지 않습니다." });
         return;
       }
-      const existsPost = await Post.find({ _id: postId });
-      const existsComment = await Comment.find({ _id: commentId });
+      const existsPost = await Post.findOne({ _id: postId });
+      const existsComment = await Comment.findOne({ _id: commentId });
       if (existsPost.length) {
         if (existsComment.length) {
           if (existsComment.map((e) => e.user_id) == userId) {
@@ -119,11 +118,10 @@ router.delete(
   authMiddleware,
   async (req, res) => {
     try {
-      const { postId } = req.params;
-      const { commentId } = req.params;
+      const { postId, commentId } = req.params;
       const { userId } = res.locals.user;
-      const existsPost = await Post.find({ _id: postId });
-      const existsComment = await Comment.find({ _id: commentId });
+      const existsPost = await Post.findOne({ _id: postId });
+      const existsComment = await Comment.findOne({ _id: commentId });
       if (existsPost.length) {
         if (existsComment.length) {
           if (existsComment.map((e) => e.user_id) == userId) {

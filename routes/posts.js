@@ -33,7 +33,7 @@ router.get("/posts/:postId", async (req, res) => {
   try {
     const { postId } = req.params;
 
-    const posts = await Post.find({ _id: postId });
+    const posts = await Post.findOne({ _id: postId });
     const postsObj = posts.map((e) => {
       return {
         postId: e._id,
@@ -112,7 +112,7 @@ router.put("/posts/:postId", authMiddleware, async (req, res) => {
         .json({ errorMessage: "게시글 내용의 형식이 일치하지 않습니다." });
       return;
     }
-    const existsPost = await Post.find({ _id: postId, user_id: userId });
+    const existsPost = await Post.findOne({ _id: postId, user_id: userId });
     if (existsPost.length) {
       await Post.updateOne(
         { _id: postId, user_id: userId },
@@ -137,7 +137,7 @@ router.delete("/posts/:postId/", authMiddleware, async (req, res) => {
   try {
     const { postId } = req.params;
     const { userId } = res.locals.user;
-    const existsPost = await Post.find({ _id: postId });
+    const existsPost = await Post.findOne({ _id: postId });
     if (existsPost.length) {
       if (existsPost.map((e) => e.user_id) == userId) {
         await Post.deleteOne({ _id: postId });
