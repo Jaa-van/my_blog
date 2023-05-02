@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
-const User = require("../schemas/user");
+// const User = require("../schemas/user");
+const { users } = require("../models");
 const jwt = require("jsonwebtoken");
 
 router.post("/login", async (req, res) => {
@@ -9,7 +10,9 @@ router.post("/login", async (req, res) => {
     const { nickname, password } = req.body;
 
     // 닉네임 존재 여부와 비밀번호 매치 여부 확인
-    const user = await User.findOne({ nickname });
+    const user = await users.findOne({
+      where: { nickname },
+    });
     if (!user || user.password !== password) {
       res
         .status(412)

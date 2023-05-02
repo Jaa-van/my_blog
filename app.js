@@ -5,11 +5,11 @@ const port = 3000;
 
 const postRouter = require("./routes/posts.js");
 const commentRouter = require("./routes/comment.js");
-const signupRouter = require("./routes/signup.js");
+const signupRouter = require("./routes/signup.route.js");
 const loginRouter = require("./routes/login.js");
 
-const connect = require("./schemas");
-connect();
+// const connect = require("./schemas");
+// connect();
 
 app.use(express.json());
 app.use(cookieParser());

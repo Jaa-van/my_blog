@@ -2,8 +2,11 @@ const express = require("express");
 const router = express.Router();
 const authMiddleware = require("../middlewares/auth-middleware");
 
-const Post = require("../schemas/post.js");
-const Comment = require("../schemas/comment.js");
+// const Post = require("../schemas/post.js");
+// const Comment = require("../schemas/comment.js");
+
+const { Post } = require("../models/posts");
+const { Comment } = require("../models/comments");
 
 // 댓글 생성
 

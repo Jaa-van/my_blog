@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
-const User = require("../schemas/user");
+// const User = require("../schemas/user");
+const { users } = require("../models");
 const jwt = require("jsonwebtoken");
 
 router.post("/signup", async (req, res) => {
@@ -40,15 +41,21 @@ router.post("/signup", async (req, res) => {
     }
 
     // nickname 중복 여부 확인
-    const existNickname = await User.findOne({ nickname });
+    const existNickname = await users.findOne({
+      where: {
+        nickname: nickname,
+      },
+    });
     if (existNickname) {
       res.status(400).json({ errorMessage: "중복된 닉네임입니다." });
       return;
     }
 
     // 회원가입 성공
-    const user = new User({ nickname, password });
-    await user.save();
+    // const user = new User({ nickname, password });
+    // await user.save();
+
+    const user = await users.create({ nickname, password });
 
     res.status(201).json({ message: "회원 가입에 성공하였습니다." });
   } catch (e) {
