@@ -21,7 +21,7 @@ router.post("/login", async (req, res) => {
     }
 
     // JWT 를 생성하고 쿠키에 Authorization 으로 Bearer로 처리된 데이터를 보낸다
-    const token = jwt.sign({ userId: user.userId }, "my-first-secret-key");
+    const token = jwt.sign({ userId: user.user_id }, "my-first-secret-key");
 
     res.cookie("Authorization", `Bearer ${token}`); //
     res.status(200).json({ token });

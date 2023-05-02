@@ -3,10 +3,10 @@ const cookieParser = require("cookie-parser");
 const app = express();
 const port = 3000;
 
-const postRouter = require("./routes/posts.js");
-const commentRouter = require("./routes/comment.js");
+const postRouter = require("./routes/posts.route.js");
+const commentRouter = require("./routes/comment.route.js");
 const signupRouter = require("./routes/signup.route.js");
-const loginRouter = require("./routes/login.js");
+const loginRouter = require("./routes/login.route.js");
 
 // const connect = require("./schemas");
 // connect();
