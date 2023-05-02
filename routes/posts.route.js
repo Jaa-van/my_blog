@@ -8,7 +8,6 @@ const authMiddleware = require("../middlewares/auth-middleware");
 
 const { users } = require("../models");
 const { posts } = require("../models");
-const { Comment } = require("../models/comments");
 
 // 게시글 조회
 
@@ -166,12 +165,9 @@ router.delete("/posts/:postId/", authMiddleware, async (req, res) => {
         },
       });
     } else {
-      res
-        .status(404)
-        .json({
-          errorMessage:
-            "게시글이 존재하지 않거나 삭제 권한이 존재하지 않습니다.",
-        });
+      res.status(404).json({
+        errorMessage: "게시글이 존재하지 않거나 삭제 권한이 존재하지 않습니다.",
+      });
       return;
     }
 
