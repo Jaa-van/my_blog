@@ -1,4 +1,5 @@
 const express = require("express");
+const { Op } = require("sequelize");
 const router = express.Router();
 const authMiddleware = require("../middlewares/auth-middleware");
 
@@ -102,7 +103,7 @@ router.put("/posts/:postId", authMiddleware, async (req, res) => {
   try {
     const { postId } = req.params;
     const { title, content } = req.body;
-    const { userId } = res.locals.user;
+    const { user_id } = res.locals.user;
 
     if (!title || !content) {
       res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." });
@@ -120,11 +121,19 @@ router.put("/posts/:postId", authMiddleware, async (req, res) => {
         .json({ errorMessage: "게시글 내용의 형식이 일치하지 않습니다." });
       return;
     }
-    const existsPost = await Post.findOne({ _id: postId, user_id: userId });
-    if (existsPost.length) {
-      await Post.updateOne(
-        { _id: postId, user_id: userId },
-        { $set: { title: title, content: content, updatedAt: Date.now() } }
+    const existsPost = await posts.findOne({
+      where: {
+        [Op.and]: [{ post_id: postId }, { UserId: user_id }],
+      },
+    });
+    if (existsPost) {
+      await posts.update(
+        { title, content, updatedAt: new Date() },
+        {
+          where: {
+            [Op.and]: [{ post_id: postId }, { UserId: user_id }],
+          },
+        }
       );
     } else {
       res.status(400).json({
@@ -144,20 +153,25 @@ router.put("/posts/:postId", authMiddleware, async (req, res) => {
 router.delete("/posts/:postId/", authMiddleware, async (req, res) => {
   try {
     const { postId } = req.params;
-    const { userId } = res.locals.user;
-    const existsPost = await Post.findOne({ _id: postId });
-    if (existsPost.length) {
-      if (existsPost.map((e) => e.user_id) == userId) {
-        await Post.deleteOne({ _id: postId });
-        await Comment.deleteMany({ post_id: postId });
-      } else {
-        res
-          .status(403)
-          .json({ errorMessage: "게시글의 삭제 권한이 존재하지 않습니다." });
-        return;
-      }
+    const { user_id } = res.locals.user;
+    const existsPost = await posts.findOne({
+      where: {
+        [Op.and]: [{ post_id: postId }, { UserId: user_id }],
+      },
+    });
+    if (existsPost) {
+      await posts.destroy({
+        where: {
+          [Op.and]: [{ post_id: postId }, { UserId: user_id }],
+        },
+      });
     } else {
-      res.status(404).json({ errorMessage: "게시글이 존재하지 않습니다." });
+      res
+        .status(404)
+        .json({
+          errorMessage:
+            "게시글이 존재하지 않거나 삭제 권한이 존재하지 않습니다.",
+        });
       return;
     }
 
