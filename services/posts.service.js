@@ -44,6 +44,17 @@ class PostService {
     };
     return onePostObj;
   };
+
+  putPost = async (postId, user_id, title, content) => {
+    const putPost = await this.postRepository.putPost(
+      postId,
+      user_id,
+      title,
+      content
+    );
+
+    return "게시글을 수정하였습니다";
+  };
 }
 
 module.exports = PostService;

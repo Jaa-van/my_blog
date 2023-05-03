@@ -28,6 +28,20 @@ class PostsController {
 
     res.status(200).json({ post: post });
   };
+
+  putPost = async (req, res, next) => {
+    const { postId } = req.params;
+    const { user_id } = res.locals.user;
+    const { title, content } = req.body;
+    const putPost = await this.postService.putPost(
+      postId,
+      user_id,
+      title,
+      content
+    );
+
+    res.status(200).json({ message: putPost });
+  };
 }
 
 module.exports = PostsController;

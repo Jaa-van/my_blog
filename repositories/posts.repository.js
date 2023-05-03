@@ -1,4 +1,5 @@
 const { posts, users } = require("../models");
+const { Op } = require("sequelize");
 
 class PostRepository {
   findAllPost = async () => {
@@ -26,6 +27,7 @@ class PostRepository {
 
   findOnePost = async (postId) => {
     const post = await posts.findOne({
+      where: { post_id: postId },
       attributes: [
         "post_id",
         "UserId",
@@ -41,6 +43,18 @@ class PostRepository {
         },
       ],
     });
+    return post;
+  };
+
+  putPost = async (postId, user_id, title, content) => {
+    const post = await posts.update(
+      { title, content, updatedAt: new Date() },
+      {
+        where: {
+          [Op.and]: [{ post_id: postId }, { UserId: user_id }],
+        },
+      }
+    );
     return post;
   };
 }
