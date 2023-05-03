@@ -1,6 +1,7 @@
 const express = require("express");
 const { Op } = require("sequelize");
 const router = express.Router();
+const sequelize = require("sequelize");
 const authMiddleware = require("../middlewares/auth-middleware");
 
 // const Post = require("../schemas/post.js");
@@ -8,6 +9,7 @@ const authMiddleware = require("../middlewares/auth-middleware");
 
 const { users } = require("../models");
 const { posts } = require("../models");
+const { likes } = require("../models");
 
 // 게시글 조회
 
@@ -31,6 +33,46 @@ router.get("/posts/", async (req, res) => {
 });
 
 // 게시글 상세 조회
+
+router.get("/posts/like", authMiddleware, async (req, res) => {
+  try {
+    const { user_id } = res.locals.user;
+    const likedPost = await posts.findAll({
+      attributes: [
+        "post_id",
+        "UserId",
+        "title",
+        "createdAt",
+        "updatedAt",
+        [
+          sequelize.literal(
+            "(SELECT COUNT(*) FROM likes WHERE likes.PostId = posts.post_id)"
+          ),
+          "countLikes",
+        ],
+      ],
+      include: [
+        {
+          model: users,
+          attributes: ["nickname"],
+        },
+        {
+          model: likes,
+          attributes: [],
+          required: true,
+          where: {
+            [Op.and]: [{ UserId: user_id }],
+          },
+        },
+      ],
+    });
+    res.status(200).json({ posts: likedPost });
+  } catch (e) {
+    res
+      .status(400)
+      .json({ errorMessage: "좋아요 게시글 조회에 실패하였습니다." });
+  }
+});
 
 router.get("/posts/:postId", async (req, res) => {
   try {
@@ -174,6 +216,48 @@ router.delete("/posts/:postId/", authMiddleware, async (req, res) => {
     res.status(200).json({ message: "게시글을 삭제하였습니다." });
   } catch (e) {
     res.status(400).json({ message: "게시글 삭제에 실패하였습니다" });
+  }
+});
+
+router.put("/posts/:postId/like", authMiddleware, async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const { user_id } = res.locals.user;
+
+    const existsPost = await posts.findOne({
+      where: { post_id: postId },
+    });
+    const existsPostByUser = await likes.findOne({
+      where: {
+        [Op.and]: [{ PostId: postId }, { UserId: user_id }],
+      },
+    });
+    if (!existsPost) {
+      return res
+        .status(404)
+        .json({ errorMessage: "게시글이 존재하지 않습니다." });
+    }
+    if (existsPostByUser) {
+      await likes.destroy({
+        where: {
+          [Op.and]: [{ PostId: postId }, { UserId: user_id }],
+        },
+      });
+      return res
+        .status(200)
+        .json({ message: "게시글의 좋아요를 취소하였습니다." });
+    } else {
+      const createLike = await likes.create({
+        PostId: postId,
+        UserId: user_id,
+      });
+      console.log(createLike);
+      return res
+        .status(200)
+        .json({ message: "게시글의 좋아요를 등록하였습니다." });
+    }
+  } catch (e) {
+    res.status(400).json({ errorMessage: "게시글 좋아요에 실패하였습니다." });
   }
 });
 
