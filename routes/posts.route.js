@@ -7,30 +7,35 @@ const authMiddleware = require("../middlewares/auth-middleware");
 // const Post = require("../schemas/post.js");
 // const Comment = require("../schemas/comment.js");
 
-const { users } = require("../models");
-const { posts } = require("../models");
-const { likes } = require("../models");
+// const { users } = require("../models");
+// const { posts } = require("../models");
+// const { likes } = require("../models");
 
 // 게시글 조회
 
-router.get("/posts/", async (req, res) => {
-  try {
-    const post = await posts.findAll({
-      attributes: ["post_id", "UserId", "title", "createdAt", "updatedAt"],
-      include: [
-        {
-          model: users,
-          attributes: ["nickname"],
-        },
-      ],
-      order: [["createdAt", "DESC"]],
-    });
+const PostsController = require("../controllers/posts.controller");
+const postsController = new PostsController();
 
-    res.status(200).json({ posts: post });
-  } catch (e) {
-    res.status(400).json({ errorMessage: "게시글 조회에 실패하였습니다." });
-  }
-});
+router.get("/", postsController.getPosts);
+
+// router.get("/posts/", async (req, res) => {
+//   try {
+//     const post = await posts.findAll({
+//       attributes: ["post_id", "UserId", "title", "createdAt", "updatedAt"],
+//       include: [
+//         {
+//           model: users,
+//           attributes: ["nickname"],
+//         },
+//       ],
+//       order: [["createdAt", "DESC"]],
+//     });
+
+//     res.status(200).json({ posts: post });
+//   } catch (e) {
+//     res.status(400).json({ errorMessage: "게시글 조회에 실패하였습니다." });
+//   }
+// });
 
 // 좋아요 게시글 조회
 
