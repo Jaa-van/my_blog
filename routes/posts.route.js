@@ -32,7 +32,7 @@ router.get("/posts/", async (req, res) => {
   }
 });
 
-// 게시글 상세 조회
+// 좋아요 게시글 조회
 
 router.get("/posts/like", authMiddleware, async (req, res) => {
   try {
@@ -73,6 +73,8 @@ router.get("/posts/like", authMiddleware, async (req, res) => {
       .json({ errorMessage: "좋아요 게시글 조회에 실패하였습니다." });
   }
 });
+
+// 게시글 상세 조회
 
 router.get("/posts/:postId", async (req, res) => {
   try {
@@ -218,6 +220,8 @@ router.delete("/posts/:postId/", authMiddleware, async (req, res) => {
     res.status(400).json({ message: "게시글 삭제에 실패하였습니다" });
   }
 });
+
+// 좋아요 수정
 
 router.put("/posts/:postId/like", authMiddleware, async (req, res) => {
   try {
