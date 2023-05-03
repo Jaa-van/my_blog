@@ -21,6 +21,29 @@ class PostService {
       };
     });
   };
+
+  createPost = async (user_id, title, content) => {
+    const createPostDat = await this.postRepository.createPost(
+      user_id,
+      title,
+      content
+    );
+    return "게시글 작성에 성공하였습니다";
+  };
+
+  findOnePost = async (postId) => {
+    const onePost = await this.postRepository.findOnePost(postId);
+    let onePostObj = {
+      postId: onePost.post_id,
+      userId: onePost.UserId,
+      nickname: onePost.user.nickname,
+      title: onePost.title,
+      content: onePost.content,
+      createdAt: onePost.createdAt,
+      updatedAt: onePost.updatedAt,
+    };
+    return onePostObj;
+  };
 }
 
 module.exports = PostService;

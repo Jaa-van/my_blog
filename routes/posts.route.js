@@ -81,6 +81,8 @@ router.get("/posts/like", authMiddleware, async (req, res) => {
 
 // 게시글 상세 조회
 
+router.get("/:postId", postsController.getPost);
+
 router.get("/posts/:postId", async (req, res) => {
   try {
     const { postId } = req.params;
@@ -110,40 +112,42 @@ router.get("/posts/:postId", async (req, res) => {
 
 // 게시글 작성
 
-router.post("/posts/", authMiddleware, async (req, res) => {
-  try {
-    const { title, content } = req.body;
-    const { user_id } = res.locals.user;
-    console.log(user_id);
-    if (!title || !content) {
-      res
-        .status(412)
-        .json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
-      return;
-    }
-    if (typeof title !== "string") {
-      res
-        .status(412)
-        .json({ errorMessage: "게시글 제목의 형식이 일치하지 않습니다." });
-      return;
-    }
-    if (typeof content !== "string") {
-      res
-        .status(412)
-        .json({ errorMessage: "게시글 내용의 형식이 일치하지 않습니다." });
-      return;
-    }
-    const createPost = await posts.create({
-      UserId: user_id,
-      title,
-      content,
-    });
+router.post("/", authMiddleware, postsController.createPost);
 
-    res.status(201).json({ message: "게시글 작성에 성공하였습니다." });
-  } catch (e) {
-    res.status(400).json({ errorMessage: "게시글 작성에 실패하였습니다." });
-  }
-});
+// router.post("/posts/", authMiddleware, async (req, res) => {
+//   try {
+//     const { title, content } = req.body;
+//     const { user_id } = res.locals.user;
+//     console.log(user_id);
+//     if (!title || !content) {
+//       res
+//         .status(412)
+//         .json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
+//       return;
+//     }
+//     if (typeof title !== "string") {
+//       res
+//         .status(412)
+//         .json({ errorMessage: "게시글 제목의 형식이 일치하지 않습니다." });
+//       return;
+//     }
+//     if (typeof content !== "string") {
+//       res
+//         .status(412)
+//         .json({ errorMessage: "게시글 내용의 형식이 일치하지 않습니다." });
+//       return;
+//     }
+//     const createPost = await posts.create({
+//       UserId: user_id,
+//       title,
+//       content,
+//     });
+
+//     res.status(201).json({ message: "게시글 작성에 성공하였습니다." });
+//   } catch (e) {
+//     res.status(400).json({ errorMessage: "게시글 작성에 실패하였습니다." });
+//   }
+// });
 
 // 게시글 수정
 
