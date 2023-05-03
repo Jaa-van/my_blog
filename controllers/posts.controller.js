@@ -42,6 +42,15 @@ class PostsController {
 
     res.status(200).json({ message: putPost });
   };
+
+  deletePost = async (req, res, next) => {
+    const { postId } = req.params;
+    const { user_id } = res.locals.user;
+
+    const deletePost = await this.postService.deletePost(postId, user_id);
+
+    res.status(200).json({ message: deletePost });
+  };
 }
 
 module.exports = PostsController;

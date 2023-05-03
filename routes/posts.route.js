@@ -204,33 +204,37 @@ router.put("/:postId", authMiddleware, postsController.putPost);
 //   }
 // });
 
-router.delete("/posts/:postId/", authMiddleware, async (req, res) => {
-  try {
-    const { postId } = req.params;
-    const { user_id } = res.locals.user;
-    const existsPost = await posts.findOne({
-      where: {
-        [Op.and]: [{ post_id: postId }, { UserId: user_id }],
-      },
-    });
-    if (existsPost) {
-      await posts.destroy({
-        where: {
-          [Op.and]: [{ post_id: postId }, { UserId: user_id }],
-        },
-      });
-    } else {
-      res.status(404).json({
-        errorMessage: "게시글이 존재하지 않거나 삭제 권한이 존재하지 않습니다.",
-      });
-      return;
-    }
+// 게시글 삭제
 
-    res.status(200).json({ message: "게시글을 삭제하였습니다." });
-  } catch (e) {
-    res.status(400).json({ message: "게시글 삭제에 실패하였습니다" });
-  }
-});
+router.delete("/:postId", authMiddleware, postsController.deletePost);
+
+// router.delete("/posts/:postId/", authMiddleware, async (req, res) => {
+//   try {
+//     const { postId } = req.params;
+//     const { user_id } = res.locals.user;
+//     const existsPost = await posts.findOne({
+//       where: {
+//         [Op.and]: [{ post_id: postId }, { UserId: user_id }],
+//       },
+//     });
+//     if (existsPost) {
+//       await posts.destroy({
+//         where: {
+//           [Op.and]: [{ post_id: postId }, { UserId: user_id }],
+//         },
+//       });
+//     } else {
+//       res.status(404).json({
+//         errorMessage: "게시글이 존재하지 않거나 삭제 권한이 존재하지 않습니다.",
+//       });
+//       return;
+//     }
+
+//     res.status(200).json({ message: "게시글을 삭제하였습니다." });
+//   } catch (e) {
+//     res.status(400).json({ message: "게시글 삭제에 실패하였습니다" });
+//   }
+// });
 
 // 좋아요 수정
 

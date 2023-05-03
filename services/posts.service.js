@@ -55,6 +55,11 @@ class PostService {
 
     return "게시글을 수정하였습니다";
   };
+
+  deletePost = async (postId, user_id) => {
+    const deletePost = await this.postRepository.deletePost(postId, user_id);
+    return "게시글을 삭제하였습니다";
+  };
 }
 
 module.exports = PostService;

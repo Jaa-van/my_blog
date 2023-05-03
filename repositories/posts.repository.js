@@ -57,6 +57,15 @@ class PostRepository {
     );
     return post;
   };
+
+  deletePost = async (postId, user_id) => {
+    const post = await posts.destroy({
+      where: {
+        [Op.and]: [{ post_id: postId }, { UserId: user_id }],
+      },
+    });
+    return post;
+  };
 }
 
 module.exports = PostRepository;
