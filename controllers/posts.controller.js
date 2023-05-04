@@ -4,22 +4,30 @@ class PostsController {
   postService = new PostService();
 
   getPosts = async (req, res, next) => {
-    const post = await this.postService.findAllPost();
+    try {
+      const post = await this.postService.findAllPost();
 
-    res.status(200).json({ posts: post });
+      res.status(200).json({ posts: post });
+    } catch (error) {
+      throw new Error("400/게시글 작성에 실패하였습니다.");
+    }
   };
 
   createPost = async (req, res, next) => {
-    const { title, content } = req.body;
-    const { user_id } = res.locals.user;
+    try {
+      const { title, content } = req.body;
+      const { user_id } = res.locals.user;
 
-    const createPostData = await this.postService.createPost(
-      user_id,
-      title,
-      content
-    );
+      const createPostData = await this.postService.createPost(
+        user_id,
+        title,
+        content
+      );
 
-    res.status(201).json({ message: createPostData });
+      res.status(201).json({ message: createPostData });
+    } catch (error) {
+      throw new Error("412/게시글 작성에 실패하였습니다.");
+    }
   };
 
   getPost = async (req, res, next) => {

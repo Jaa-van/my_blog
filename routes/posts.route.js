@@ -41,45 +41,45 @@ router.get("/", postsController.getPosts);
 
 router.get("/like", authMiddleware, postsController.getLikedPosts);
 
-router.get("/posts/like", authMiddleware, async (req, res) => {
-  try {
-    const { user_id } = res.locals.user;
-    const likedPost = await posts.findAll({
-      attributes: [
-        "post_id",
-        "UserId",
-        "title",
-        "createdAt",
-        "updatedAt",
-        [
-          sequelize.literal(
-            "(SELECT COUNT(*) FROM likes WHERE likes.PostId = posts.post_id)"
-          ),
-          "countLikes",
-        ],
-      ],
-      include: [
-        {
-          model: users,
-          attributes: ["nickname"],
-        },
-        {
-          model: likes,
-          attributes: [],
-          required: true,
-          where: {
-            [Op.and]: [{ UserId: user_id }],
-          },
-        },
-      ],
-    });
-    res.status(200).json({ posts: likedPost });
-  } catch (e) {
-    res
-      .status(400)
-      .json({ errorMessage: "좋아요 게시글 조회에 실패하였습니다." });
-  }
-});
+// router.get("/posts/like", authMiddleware, async (req, res) => {
+//   try {
+//     const { user_id } = res.locals.user;
+//     const likedPost = await posts.findAll({
+//       attributes: [
+//         "post_id",
+//         "UserId",
+//         "title",
+//         "createdAt",
+//         "updatedAt",
+//         [
+//           sequelize.literal(
+//             "(SELECT COUNT(*) FROM likes WHERE likes.PostId = posts.post_id)"
+//           ),
+//           "countLikes",
+//         ],
+//       ],
+//       include: [
+//         {
+//           model: users,
+//           attributes: ["nickname"],
+//         },
+//         {
+//           model: likes,
+//           attributes: [],
+//           required: true,
+//           where: {
+//             [Op.and]: [{ UserId: user_id }],
+//           },
+//         },
+//       ],
+//     });
+//     res.status(200).json({ posts: likedPost });
+//   } catch (e) {
+//     res
+//       .status(400)
+//       .json({ errorMessage: "좋아요 게시글 조회에 실패하였습니다." });
+//   }
+// });
 
 // 게시글 상세 조회
 
