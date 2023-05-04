@@ -39,6 +39,8 @@ router.get("/", postsController.getPosts);
 
 // 좋아요 게시글 조회
 
+router.get("/like", authMiddleware, postsController.getLikedPosts);
+
 router.get("/posts/like", authMiddleware, async (req, res) => {
   try {
     const { user_id } = res.locals.user;

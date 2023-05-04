@@ -1,5 +1,6 @@
 const { posts, users, likes } = require("../models");
 const { Op } = require("sequelize");
+const sequelize = require("sequelize");
 
 class PostRepository {
   findAllPost = async () => {
@@ -87,6 +88,40 @@ class PostRepository {
       });
       return "likesCreate";
     }
+  };
+
+  getLikedPostsDb = async (user_id) => {
+    const likedPosts = await posts.findAll({
+      attributes: [
+        "post_id",
+        "UserId",
+        "title",
+        "createdAt",
+        "updatedAt",
+        [
+          sequelize.literal(
+            "(SELECT COUNT(*) FROM likes WHERE likes.PostId = posts.post_id)"
+          ),
+          "countLikes",
+        ],
+      ],
+      include: [
+        {
+          model: users,
+          attributes: ["nickname"],
+        },
+        {
+          model: likes,
+          attributes: [],
+          required: true,
+          where: {
+            [Op.and]: [{ UserId: user_id }],
+          },
+        },
+      ],
+    });
+
+    return likedPosts;
   };
 }
 

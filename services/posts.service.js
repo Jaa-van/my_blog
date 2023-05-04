@@ -65,7 +65,22 @@ class PostService {
     const updatedLike = await this.postRepository.updateLikeDb(postId, user_id);
     if (updatedLike == "likesCreate")
       return "게시글의 좋아요를 등록하였습니다.";
-    else return "게시길의 좋아요를 취소하였습니다.";
+    else return "게시글의 좋아요를 취소하였습니다.";
+  };
+
+  getLikedPosts = async (user_id) => {
+    const allLikedPost = await this.postRepository.getLikedPostsDb(user_id);
+    const returnLikedPost = allLikedPost.map((post) => {
+      return {
+        postId: post.PostId,
+        userId: post.UserId,
+        nickname: post.user.nickname,
+        title: post.title,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+      };
+    });
+    return returnLikedPost;
   };
 }
 

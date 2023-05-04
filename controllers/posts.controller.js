@@ -60,6 +60,12 @@ class PostsController {
 
     res.status(200).json({ message: like });
   };
+
+  getLikedPosts = async (req, res, next) => {
+    const { user_id } = res.locals.user;
+    const likedPost = await this.postService.getLikedPosts(user_id);
+    res.status(200).json({ posts: likedPost });
+  };
 }
 
 module.exports = PostsController;
