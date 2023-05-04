@@ -6,11 +6,20 @@ const authMiddleware = require("../middlewares/auth-middleware");
 // const Post = require("../schemas/post.js");
 // const Comment = require("../schemas/comment.js");
 
-const { users } = require("../models");
-const { posts } = require("../models");
-const { comments } = require("../models");
+// const { users } = require("../models");
+// const { posts } = require("../models");
+// const { comments } = require("../models");
 
 // 댓글 생성
+
+const CommentsController = require("../controllers/comments.controller");
+const commentsController = new CommentsController();
+
+router.post(
+  "/:postId/comments",
+  authMiddleware,
+  commentsController.createComment
+);
 
 router.post("/posts/:postId/comments", authMiddleware, async (req, res) => {
   try {
