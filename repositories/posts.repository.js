@@ -1,4 +1,4 @@
-const { posts, users } = require("../models");
+const { posts, users, likes } = require("../models");
 const { Op } = require("sequelize");
 
 class PostRepository {
@@ -65,6 +65,28 @@ class PostRepository {
       },
     });
     return post;
+  };
+
+  updateLikeDb = async (postId, user_id) => {
+    const existsLikesByUser = await likes.findOne({
+      where: {
+        [Op.and]: [{ PostId: postId }, { UserId: user_id }],
+      },
+    });
+    if (existsLikesByUser) {
+      await likes.destroy({
+        where: {
+          [Op.and]: [{ PostId: postId }, { UserId: user_id }],
+        },
+      });
+      return "likesDestroy";
+    } else {
+      await likes.create({
+        PostId: postId,
+        UserId: user_id,
+      });
+      return "likesCreate";
+    }
   };
 }
 

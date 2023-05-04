@@ -51,6 +51,15 @@ class PostsController {
 
     res.status(200).json({ message: deletePost });
   };
+
+  putLike = async (req, res, next) => {
+    const { postId } = req.params;
+    const { user_id } = res.locals.user;
+
+    const like = await this.postService.putLike(postId, user_id);
+
+    res.status(200).json({ message: like });
+  };
 }
 
 module.exports = PostsController;

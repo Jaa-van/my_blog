@@ -60,6 +60,13 @@ class PostService {
     const deletePost = await this.postRepository.deletePost(postId, user_id);
     return "게시글을 삭제하였습니다";
   };
+
+  putLike = async (postId, user_id) => {
+    const updatedLike = await this.postRepository.updateLikeDb(postId, user_id);
+    if (updatedLike == "likesCreate")
+      return "게시글의 좋아요를 등록하였습니다.";
+    else return "게시길의 좋아요를 취소하였습니다.";
+  };
 }
 
 module.exports = PostService;

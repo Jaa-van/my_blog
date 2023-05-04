@@ -238,46 +238,47 @@ router.delete("/:postId", authMiddleware, postsController.deletePost);
 
 // 좋아요 수정
 
-router.put("/posts/:postId/like", authMiddleware, async (req, res) => {
-  try {
-    const { postId } = req.params;
-    const { user_id } = res.locals.user;
+router.put("/:postId/like", authMiddleware, postsController.putLike);
 
-    const existsPost = await posts.findOne({
-      where: { post_id: postId },
-    });
-    const existsPostByUser = await likes.findOne({
-      where: {
-        [Op.and]: [{ PostId: postId }, { UserId: user_id }],
-      },
-    });
-    if (!existsPost) {
-      return res
-        .status(404)
-        .json({ errorMessage: "게시글이 존재하지 않습니다." });
-    }
-    if (existsPostByUser) {
-      await likes.destroy({
-        where: {
-          [Op.and]: [{ PostId: postId }, { UserId: user_id }],
-        },
-      });
-      return res
-        .status(200)
-        .json({ message: "게시글의 좋아요를 취소하였습니다." });
-    } else {
-      const createLike = await likes.create({
-        PostId: postId,
-        UserId: user_id,
-      });
-      console.log(createLike);
-      return res
-        .status(200)
-        .json({ message: "게시글의 좋아요를 등록하였습니다." });
-    }
-  } catch (e) {
-    res.status(400).json({ errorMessage: "게시글 좋아요에 실패하였습니다." });
-  }
-});
+// router.put("/posts/:postId/like", authMiddleware, async (req, res) => {
+//   try {
+//     const { postId } = req.params;
+//     const { user_id } = res.locals.user;
+
+//     const existsPost = await posts.findOne({
+//       where: { post_id: postId },
+//     });
+//     const existsPostByUser = await likes.findOne({
+//       where: {
+//         [Op.and]: [{ PostId: postId }, { UserId: user_id }],
+//       },
+//     });
+//     if (!existsPost) {
+//       return res
+//         .status(404)
+//         .json({ errorMessage: "게시글이 존재하지 않습니다." });
+//     }
+//     if (existsPostByUser) {
+//       await likes.destroy({
+//         where: {
+//           [Op.and]: [{ PostId: postId }, { UserId: user_id }],
+//         },
+//       });
+//       return res
+//         .status(200)
+//         .json({ message: "게시글의 좋아요를 취소하였습니다." });
+//     } else {
+//       const createLike = await likes.create({
+//         PostId: postId,
+//         UserId: user_id,
+//       });
+//       return res
+//         .status(200)
+//         .json({ message: "게시글의 좋아요를 등록하였습니다." });
+//     }
+//   } catch (e) {
+//     res.status(400).json({ errorMessage: "게시글 좋아요에 실패하였습니다." });
+//   }
+// });
 
 module.exports = router;
