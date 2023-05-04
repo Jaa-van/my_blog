@@ -2,8 +2,13 @@ const express = require("express");
 const router = express.Router();
 
 // const User = require("../schemas/user");
-const { users } = require("../models");
+// const { users } = require("../models");
 const jwt = require("jsonwebtoken");
+
+const LoginController = require("../controllers/login.controller");
+const loginController = new LoginController();
+
+router.post("/", loginController.login);
 
 router.post("/", async (req, res) => {
   try {
