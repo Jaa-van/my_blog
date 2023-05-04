@@ -46,6 +46,14 @@ class PostService {
   };
 
   putPost = async (postId, user_id, title, content) => {
+    const existsPostById = await this.postRepository.findPostById(
+      postId,
+      user_id
+    );
+
+    if (!existsPostById)
+      throw new Error("403/게시글 수정의 권한이 존재하지 않습니다.");
+
     const putPost = await this.postRepository.putPost(
       postId,
       user_id,
@@ -57,6 +65,14 @@ class PostService {
   };
 
   deletePost = async (postId, user_id) => {
+    const existsPost = await this.postRepository.findOnePost(postId);
+    if (!existsPost) throw new Error("404/게시글이 존재하지 않습니다.");
+    const existsPostById = await this.postRepository.findPostById(
+      postId,
+      user_id
+    );
+    if (!existsPostById)
+      throw new Error("403/게시글의 삭제 권한이 존재하지 않습니다.");
     const deletePost = await this.postRepository.deletePost(postId, user_id);
     return "게시글을 삭제하였습니다";
   };

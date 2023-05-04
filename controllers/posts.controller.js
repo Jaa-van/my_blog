@@ -9,7 +9,18 @@ class PostsController {
 
       res.status(200).json({ posts: post });
     } catch (error) {
-      throw new Error("400/게시글 작성에 실패하였습니다.");
+      throw new Error("400/게시글 조회에 실패하였습니다.");
+    }
+  };
+
+  getPost = async (req, res, next) => {
+    try {
+      const { postId } = req.params;
+      const post = await this.postService.findOnePost(postId);
+
+      res.status(200).json({ post: post });
+    } catch (error) {
+      throw new Error("400/게시글 조회에 실패하였습니다.");
     }
   };
 
@@ -17,6 +28,12 @@ class PostsController {
     try {
       const { title, content } = req.body;
       const { user_id } = res.locals.user;
+      if (!title || !content)
+        throw new Error("412/데이터 형식이 올바르지 않습니다.");
+      if (typeof title !== "string")
+        throw new Error("412/게시글 제목의 형식이 일치하지 않습니다.");
+      if (typeof content !== "string")
+        throw new Error("412/게시글 내용의 형식이 일치하지 않습니다.");
 
       const createPostData = await this.postService.createPost(
         user_id,
@@ -26,38 +43,46 @@ class PostsController {
 
       res.status(201).json({ message: createPostData });
     } catch (error) {
-      throw new Error("412/게시글 작성에 실패하였습니다.");
+      throw new Error(error.message || "400/게시글 작성에 실패하였습니다.");
     }
   };
 
-  getPost = async (req, res, next) => {
-    const { postId } = req.params;
-    const post = await this.postService.findOnePost(postId);
-
-    res.status(200).json({ post: post });
-  };
-
   putPost = async (req, res, next) => {
-    const { postId } = req.params;
-    const { user_id } = res.locals.user;
-    const { title, content } = req.body;
-    const putPost = await this.postService.putPost(
-      postId,
-      user_id,
-      title,
-      content
-    );
+    try {
+      const { postId } = req.params;
+      const { user_id } = res.locals.user;
+      const { title, content } = req.body;
+      if (!title || !content)
+        throw new Error("412/데이터 형식이 올바르지 않습니다.");
+      if (typeof title !== "string")
+        throw new Error("412/게시글 제목의 형식이 일치하지 않습니다.");
+      if (typeof content !== "string")
+        throw new Error("412/게시글 내용의 형식이 일치하지 않습니다.");
 
-    res.status(200).json({ message: putPost });
+      const putPost = await this.postService.putPost(
+        postId,
+        user_id,
+        title,
+        content
+      );
+
+      res.status(200).json({ message: putPost });
+    } catch (error) {
+      throw new Error(error.message || "400/게시글 수정에 실패하였습니다.");
+    }
   };
 
   deletePost = async (req, res, next) => {
-    const { postId } = req.params;
-    const { user_id } = res.locals.user;
+    try {
+      const { postId } = req.params;
+      const { user_id } = res.locals.user;
 
-    const deletePost = await this.postService.deletePost(postId, user_id);
+      const deletePost = await this.postService.deletePost(postId, user_id);
 
-    res.status(200).json({ message: deletePost });
+      res.status(200).json({ message: deletePost });
+    } catch (error) {
+      throw new Error(error.message || "400/게시글 작성에 실패하였습니다.");
+    }
   };
 
   putLike = async (req, res, next) => {

@@ -46,6 +46,14 @@ class PostRepository {
     });
     return post;
   };
+  findPostById = async (postId, user_id) => {
+    const post = await posts.findOne({
+      where: {
+        [Op.and]: [{ post_id: postId }, { UserId: user_id }],
+      },
+    });
+    return post;
+  };
 
   putPost = async (postId, user_id, title, content) => {
     const post = await posts.update(
