@@ -36,6 +36,15 @@ class CommentsRepository {
     );
     return updatedComment;
   };
+
+  deleteCommentDb = async (postId, commentId, user_id) => {
+    const deletedComment = await comments.destroy({
+      where: {
+        [Op.and]: [{ comment_id: commentId }, { UserId: user_id }],
+      },
+    });
+    return deletedComment;
+  };
 }
 
 module.exports = CommentsRepository;

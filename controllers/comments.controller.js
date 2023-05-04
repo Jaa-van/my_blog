@@ -37,6 +37,19 @@ class CommentsController {
     );
     res.status(200).json({ message: updatedCommentData });
   };
+
+  deleteComment = async (req, res, next) => {
+    const { postId, commentId } = req.params;
+    const { user_id } = res.locals.user;
+
+    const deletedComment = await this.commentsService.deleteComment(
+      postId,
+      commentId,
+      user_id
+    );
+
+    res.status(200).json({ message: deletedComment });
+  };
 }
 
 module.exports = CommentsController;

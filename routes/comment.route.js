@@ -147,6 +147,14 @@ router.put(
 //   }
 // );
 
+// 댓글 삭제
+
+router.delete(
+  "/:postId/comments/:commentId",
+  authMiddleware,
+  commentsController.deleteComment
+);
+
 router.delete(
   "/posts/:postId/comments/:commentId",
   authMiddleware,

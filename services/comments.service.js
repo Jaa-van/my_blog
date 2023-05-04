@@ -39,6 +39,15 @@ class CommentsService {
     );
     return "댓글을 수정하였습니다.";
   };
+
+  deleteComment = async (postId, commentId, user_id) => {
+    const deletedComment = await this.commentsRepository.deleteCommentDb(
+      postId,
+      commentId,
+      user_id
+    );
+    return "댓글을 삭제하였습니다.";
+  };
 }
 
 module.exports = CommentsService;
