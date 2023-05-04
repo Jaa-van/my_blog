@@ -11,6 +11,24 @@ class CommentsService {
     );
     return "댓글을 생성하였습니다.";
   };
+
+  findComments = async (postId) => {
+    const allComments = await this.commentsRepository.findComments(postId);
+
+    allComments.sort((a, b) => {
+      return b.cretedAt - a.createdAt;
+    });
+
+    return allComments.map((comment) => {
+      return {
+        commentId: comment.comment_id,
+        userId: comment.UserId,
+        nickname: comment.user.nickname,
+        createdAt: comment.createdAt,
+        updatedAt: comment.updatedAt,
+      };
+    });
+  };
 }
 
 module.exports = CommentsService;

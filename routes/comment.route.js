@@ -21,69 +21,71 @@ router.post(
   commentsController.createComment
 );
 
-router.post("/posts/:postId/comments", authMiddleware, async (req, res) => {
-  try {
-    const { comment } = req.body;
-    const { user_id } = res.locals.user;
-    const { postId } = req.params;
-    const existsPost = await posts.findOne({
-      where: { post_id: postId },
-    });
+// router.post("/posts/:postId/comments", authMiddleware, async (req, res) => {
+//   try {
+//     const { comment } = req.body;
+//     const { user_id } = res.locals.user;
+//     const { postId } = req.params;
+//     const existsPost = await posts.findOne({
+//       where: { post_id: postId },
+//     });
 
-    // 데이터 전달이 이상한 경우
-    if (!comment || typeof comment !== "string") {
-      res
-        .status(412)
-        .json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
-      return;
-    }
-    // 게시글이 존재하지 않는 경우
-    if (existsPost) {
-      const createComment = await comments.create({
-        PostId: postId,
-        UserId: user_id,
-        comment,
-      });
-    } else {
-      res.status(404).json({ errorMessage: "게시글이 존재하지 않습니다." });
-      return;
-    }
+//     // 데이터 전달이 이상한 경우
+//     if (!comment || typeof comment !== "string") {
+//       res
+//         .status(412)
+//         .json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
+//       return;
+//     }
+//     // 게시글이 존재하지 않는 경우
+//     if (existsPost) {
+//       const createComment = await comments.create({
+//         PostId: postId,
+//         UserId: user_id,
+//         comment,
+//       });
+//     } else {
+//       res.status(404).json({ errorMessage: "게시글이 존재하지 않습니다." });
+//       return;
+//     }
 
-    res.json({ message: "댓글을 생성하였습니다." });
-  } catch (e) {
-    res.status(400).json({ errorMessage: "댓글 작성에 실패하였습니다." });
-  }
-});
+//     res.json({ message: "댓글을 생성하였습니다." });
+//   } catch (e) {
+//     res.status(400).json({ errorMessage: "댓글 작성에 실패하였습니다." });
+//   }
+// });
 
 // 댓글 조회
 
-router.get("/posts/:postId/comments", async (req, res) => {
-  try {
-    const { postId } = req.params;
-    const comment = await comments.findAll({
-      where: { PostId: postId },
-      attributes: ["comment_id", "UserId", "comment", "createdAt", "updatedAt"],
-      include: [
-        {
-          model: users,
-          attributes: ["nickname"],
-        },
-      ],
-      order: [["createdAt", "DESC"]],
-    });
-    const existsPost = await posts.findOne({
-      where: { post_id: postId },
-    });
-    if (!existsPost) {
-      res.status(404).json({ errorMessage: "게시글이 존재하지 않습니다." });
-      return;
-    }
+router.get("/:postId/comments", commentsController.getComments);
 
-    res.status(200).json({ comments: comment });
-  } catch (e) {
-    res.status(400).json({ errorMessage: "댓글 조회에 실패하였습니다." });
-  }
-});
+// router.get("/posts/:postId/comments", async (req, res) => {
+//   try {
+//     const { postId } = req.params;
+//     const comment = await comments.findAll({
+//       where: { PostId: postId },
+//       attributes: ["comment_id", "UserId", "comment", "createdAt", "updatedAt"],
+//       include: [
+//         {
+//           model: users,
+//           attributes: ["nickname"],
+//         },
+//       ],
+//       order: [["createdAt", "DESC"]],
+//     });
+//     const existsPost = await posts.findOne({
+//       where: { post_id: postId },
+//     });
+//     if (!existsPost) {
+//       res.status(404).json({ errorMessage: "게시글이 존재하지 않습니다." });
+//       return;
+//     }
+
+//     res.status(200).json({ comments: comment });
+//   } catch (e) {
+//     res.status(400).json({ errorMessage: "댓글 조회에 실패하였습니다." });
+//   }
+// });
 
 router.put(
   "/posts/:postId/comments/:commentId",

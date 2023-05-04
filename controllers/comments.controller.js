@@ -16,6 +16,13 @@ class CommentsController {
 
     res.status(201).json({ message: createdComment });
   };
+
+  getComments = async (req, res, next) => {
+    const { postId } = req.params;
+    const comments = await this.commentsService.findComments(postId);
+
+    res.status(200).json({ comments: comments });
+  };
 }
 
 module.exports = CommentsController;
