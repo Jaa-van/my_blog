@@ -88,58 +88,64 @@ router.get("/:postId/comments", commentsController.getComments);
 // });
 
 router.put(
-  "/posts/:postId/comments/:commentId",
+  "/:postId/comments/:commentId",
   authMiddleware,
-  async (req, res) => {
-    try {
-      const { postId, commentId } = req.params;
-      const { user_id } = res.locals.user;
-      const { comment } = req.body;
-      // 데이터 형식이 올바르지 않다
-      if (!comment || typeof comment !== "string") {
-        res.status(412).json({ message: "데이터 형식이 올바르지 않습니다." });
-        return;
-      }
-      const existsPost = await posts.findOne({
-        where: { post_id: postId },
-      });
-      const existsComment = await comments.findOne({
-        where: { comment_id: commentId },
-      });
-      const existsCommentMatchId = await comments.findOne({
-        where: {
-          [Op.and]: [{ comment_id: commentId }, { UserId: user_id }],
-        },
-      });
-      if (!existsPost) {
-        res.status(404).json({ message: "게시글이 존재하지 않습니다." });
-        return;
-      }
-      if (!existsComment) {
-        res.status(404).json({ errorMessage: "댓글이 존재하지 않습니다." });
-        return;
-      }
-      if (existsCommentMatchId) {
-        await comments.update(
-          { comment, updatedAt: new Date() },
-          {
-            where: {
-              [Op.and]: [{ comment_id: commentId }, { UserId: user_id }],
-            },
-          }
-        );
-      } else {
-        res
-          .status(403)
-          .json({ errorMessage: "댓글의 수정 권한이 존재하지 않습니다" });
-        return;
-      }
-      res.status(200).json({ message: "댓글을 수정하였습니다." });
-    } catch (e) {
-      res.status(404).json({ message: "댓글 수정에 실패하였습니다." });
-    }
-  }
+  commentsController.putComment
 );
+
+// router.put(
+//   "/posts/:postId/comments/:commentId",
+//   authMiddleware,
+//   async (req, res) => {
+//     try {
+//       const { postId, commentId } = req.params;
+//       const { user_id } = res.locals.user;
+//       const { comment } = req.body;
+//       // 데이터 형식이 올바르지 않다
+//       if (!comment || typeof comment !== "string") {
+//         res.status(412).json({ message: "데이터 형식이 올바르지 않습니다." });
+//         return;
+//       }
+//       const existsPost = await posts.findOne({
+//         where: { post_id: postId },
+//       });
+//       const existsComment = await comments.findOne({
+//         where: { comment_id: commentId },
+//       });
+//       const existsCommentMatchId = await comments.findOne({
+//         where: {
+//           [Op.and]: [{ comment_id: commentId }, { UserId: user_id }],
+//         },
+//       });
+//       if (!existsPost) {
+//         res.status(404).json({ message: "게시글이 존재하지 않습니다." });
+//         return;
+//       }
+//       if (!existsComment) {
+//         res.status(404).json({ errorMessage: "댓글이 존재하지 않습니다." });
+//         return;
+//       }
+//       if (existsCommentMatchId) {
+//         await comments.update(
+//           { comment, updatedAt: new Date() },
+//           {
+//             where: {
+//               [Op.and]: [{ comment_id: commentId }, { UserId: user_id }],
+//             },
+//           }
+//         );
+//       } else {
+//         res
+//           .status(403)
+//           .json({ errorMessage: "댓글의 수정 권한이 존재하지 않습니다" });
+//         return;
+//       }
+//       res.status(200).json({ message: "댓글을 수정하였습니다." });
+//     } catch (e) {
+//       res.status(404).json({ message: "댓글 수정에 실패하였습니다." });
+//     }
+//   }
+// );
 
 router.delete(
   "/posts/:postId/comments/:commentId",

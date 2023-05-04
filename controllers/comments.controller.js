@@ -23,6 +23,20 @@ class CommentsController {
 
     res.status(200).json({ comments: comments });
   };
+
+  putComment = async (req, res, next) => {
+    const { postId, commentId } = req.params;
+    const { user_id } = res.locals.user;
+    const { comment } = req.body;
+
+    const updatedCommentData = await this.commentsService.putComment(
+      postId,
+      commentId,
+      user_id,
+      comment
+    );
+    res.status(200).json({ message: updatedCommentData });
+  };
 }
 
 module.exports = CommentsController;

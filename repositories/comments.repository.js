@@ -1,4 +1,5 @@
 const { comments, users } = require("../models");
+const { Op } = require("sequelize");
 
 class CommentsRepository {
   createCommentDb = async (comment, user_id, postId) => {
@@ -22,6 +23,18 @@ class CommentsRepository {
       ],
     });
     return allComments;
+  };
+
+  putCommentDb = async (postId, commentId, user_id, comment) => {
+    const updatedComment = await comments.update(
+      { comment, updatedAt: new Date() },
+      {
+        where: {
+          [Op.and]: [{ comment_id: commentId }, { UserId: user_id }],
+        },
+      }
+    );
+    return updatedComment;
   };
 }
 

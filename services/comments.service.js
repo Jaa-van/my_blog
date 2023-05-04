@@ -29,6 +29,16 @@ class CommentsService {
       };
     });
   };
+
+  putComment = async (postId, commentId, user_id, comment) => {
+    const putComments = await this.commentsRepository.putCommentDb(
+      postId,
+      commentId,
+      user_id,
+      comment
+    );
+    return "댓글을 수정하였습니다.";
+  };
 }
 
 module.exports = CommentsService;
