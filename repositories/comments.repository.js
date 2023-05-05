@@ -1,4 +1,4 @@
-const { comments, users } = require("../models");
+const { posts, comments, users } = require("../models");
 const { Op } = require("sequelize");
 
 class CommentsRepository {
@@ -9,6 +9,29 @@ class CommentsRepository {
       comment,
     });
     return createCommentDb;
+  };
+
+  findPostById = async (postId) => {
+    const post = await posts.findOne({
+      where: { post_id: postId },
+    });
+    return post;
+  };
+
+  findCommentById = async (commentId) => {
+    const comment = await comments.findOne({
+      where: { comment_id: commentId },
+    });
+    return comment;
+  };
+
+  findCommentByBothId = async (commentId, user_id) => {
+    const comment = await comments.findOne({
+      where: {
+        [Op.and]: [{ comment_id: commentId }, { UserId: user_id }],
+      },
+    });
+    return comment;
   };
 
   findComments = async (postId) => {

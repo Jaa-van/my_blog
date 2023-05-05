@@ -29,7 +29,7 @@ class PostsController {
       const { title, content } = req.body;
       const { user_id } = res.locals.user;
       if (!title || !content)
-        throw new Error("412/데이터 형식이 올바르지 않습니다.");
+        throw new Error("412/데이터 형식이 올바르지 않습니다."); // error.message
       if (typeof title !== "string")
         throw new Error("412/게시글 제목의 형식이 일치하지 않습니다.");
       if (typeof content !== "string")
@@ -57,7 +57,7 @@ class PostsController {
       if (typeof title !== "string")
         throw new Error("412/게시글 제목의 형식이 일치하지 않습니다.");
       if (typeof content !== "string")
-        throw new Error("412/게시글 내용의 형식이 일치하지 않습니다.");
+        throw new Error("412/게시글 내용의 형식이 일치하지 않습니다."); // joi
 
       const putPost = await this.postService.putPost(
         postId,
@@ -81,7 +81,7 @@ class PostsController {
 
       res.status(200).json({ message: deletePost });
     } catch (error) {
-      throw new Error(error.message || "400/게시글 작성에 실패하였습니다.");
+      throw new Error(error.message || "400/게시글 삭제에 실패하였습니다.");
     }
   };
 
