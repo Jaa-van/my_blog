@@ -86,18 +86,28 @@ class PostsController {
   };
 
   putLike = async (req, res, next) => {
-    const { postId } = req.params;
-    const { user_id } = res.locals.user;
+    try {
+      const { postId } = req.params;
+      const { user_id } = res.locals.user;
 
-    const like = await this.postService.putLike(postId, user_id);
+      const like = await this.postService.putLike(postId, user_id);
 
-    res.status(200).json({ message: like });
+      res.status(200).json({ message: like });
+    } catch (error) {
+      throw new Error(error.message || "400/게시글 좋아요에 실패하였습니다.");
+    }
   };
 
   getLikedPosts = async (req, res, next) => {
-    const { user_id } = res.locals.user;
-    const likedPost = await this.postService.getLikedPosts(user_id);
-    res.status(200).json({ posts: likedPost });
+    try {
+      const { user_id } = res.locals.user;
+      const likedPost = await this.postService.getLikedPosts(user_id);
+      res.status(200).json({ posts: likedPost });
+    } catch (error) {
+      throw new Error(
+        error.message || "400/좋아요 게시글 조회에 실패하였습니다."
+      );
+    }
   };
 }
 
