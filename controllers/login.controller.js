@@ -5,7 +5,6 @@ class LoginController {
 
   login = async (req, res, next) => {
     const { nickname, password } = req.body;
-
     const token = await this.loginService.createToken(nickname, password);
 
     res.cookie("Authorization", `Bearer ${token}`); //
