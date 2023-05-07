@@ -4,11 +4,13 @@ const router = express.Router();
 const SignupController = require("../controllers/signup.controller");
 const signupController = new SignupController();
 
+const user_validation = require("../controllers/joi.js");
+
 // const User = require("../schemas/user");
 // const { users } = require("../models");
 const jwt = require("jsonwebtoken");
 
-router.post("/", signupController.signup);
+router.post("/", user_validation.user_signup, signupController.signup);
 
 // router.post("/signup", async (req, res) => {
 //   try {
