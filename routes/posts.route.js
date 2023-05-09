@@ -3,7 +3,7 @@ const { Op } = require("sequelize");
 const router = express.Router();
 const sequelize = require("sequelize");
 const authMiddleware = require("../middlewares/auth-middleware");
-
+const authMiddleware2 = require("../middlewares/auth-middleware2");
 // const Post = require("../schemas/post.js");
 // const Comment = require("../schemas/comment.js");
 
@@ -113,8 +113,8 @@ router.get("/:postId", postsController.getPost);
 // });
 
 // 게시글 작성
-
-router.post("/", authMiddleware, postsController.createPost);
+router.post("/", authMiddleware2, postsController.createPost);
+// router.post("/", authMiddleware, postsController.createPost);
 
 // router.post("/posts/", authMiddleware, async (req, res) => {
 //   try {
