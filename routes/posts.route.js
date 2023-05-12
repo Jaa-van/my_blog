@@ -113,8 +113,8 @@ router.get("/:postId", postsController.getPost);
 // });
 
 // 게시글 작성
-router.post("/", authMiddleware2, postsController.createPost);
-// router.post("/", authMiddleware, postsController.createPost);
+// router.post("/", authMiddleware2, postsController.createPost);
+router.post("/", authMiddleware, postsController.createPost);
 
 // router.post("/posts/", authMiddleware, async (req, res) => {
 //   try {

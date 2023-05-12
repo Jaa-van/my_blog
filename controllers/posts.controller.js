@@ -9,6 +9,7 @@ class PostsController {
 
       res.status(200).json({ posts: post });
     } catch (error) {
+      console.error(error);
       throw new Error("400/게시글 조회에 실패하였습니다.");
     }
   };

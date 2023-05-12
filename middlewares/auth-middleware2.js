@@ -3,6 +3,7 @@ const { users } = require("../models");
 const redis = require("redis");
 require("dotenv").config();
 const RedisClientRepository = require("../repositories/redishClient.repository");
+const env = process.env;
 
 module.exports = async (req, res, next) => {
   const redisClientRepository = new RedisClientRepository();
@@ -35,7 +36,7 @@ module.exports = async (req, res, next) => {
         .status(419)
         .json({ message: "refresh Token의 정보가 서버에 존재하지 않습니다" });
 
-    const newAt = jwt.sign({ userId: accessTokenId }, "my-first-secret-key", {
+    const newAt = jwt.sign({ userId: accessTokenId }, `${env.SECRET_KEY}`, {
       expiresIn: "10s",
     });
     res.cookie("accessToken", newAt);
@@ -55,7 +56,7 @@ module.exports = async (req, res, next) => {
 
 function validateAccessToken(accessToken) {
   try {
-    jwt.verify(accessToken, "my-first-secret-key"); // JWT를 검증합니다.
+    jwt.verify(accessToken, `${env.SECRET_KEY}`); // JWT를 검증합니다.
     return true;
   } catch (error) {
     return false;
@@ -65,7 +66,7 @@ function validateAccessToken(accessToken) {
 // Refresh Token을 검증합니다.
 function validateRefreshToken(refreshToken) {
   try {
-    jwt.verify(refreshToken, "my-first-secret-key"); // JWT를 검증합니다.
+    jwt.verify(refreshToken, `${env.SECRET_KEY}`); // JWT를 검증합니다.
     return true;
   } catch (error) {
     return false;
@@ -75,7 +76,7 @@ function validateRefreshToken(refreshToken) {
 // Access Token의 Payload를 가져옵니다.
 function getAccessTokenPayload(accessToken) {
   try {
-    const payload = jwt.verify(accessToken, "my-first-secret-key"); // JWT에서 Payload를 가져옵니다.
+    const payload = jwt.verify(accessToken, `${env.SECRET_KEY}`); // JWT에서 Payload를 가져옵니다.
     return payload;
   } catch (error) {
     return null;

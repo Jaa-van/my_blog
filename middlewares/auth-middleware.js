@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 // const User = require("../schemas/user");
 const { users } = require("../models");
+require("dotenv").config();
+const env = process.env;
 
 module.exports = async (req, res, next) => {
   // 쿠키에 들어있는 JWT 형식의 Authorization 을 받아온다
@@ -21,7 +23,7 @@ module.exports = async (req, res, next) => {
   // autoToken 에 대한 검사
   try {
     // JWT 를 secret key 를 이용해 풀고 이를 locals.user 에 반환한다
-    const { userId } = jwt.verify(authToken, "my-first-secret-key");
+    const { userId } = jwt.verify(authToken, `${env.SECRET_KEY}`);
     const user = await users.findOne({
       where: { user_id: userId },
     });
